@@ -5,9 +5,10 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericItem
+import com.mikepenz.fastadapter.IFastAdapter
 
 abstract class TouchEventHook<Item : GenericItem> : EventHook<Item> {
-    abstract fun onTouch(v: View, event: MotionEvent, position: Int, fastAdapter: FastAdapter<Item>, item: Item): Boolean
+    abstract fun onTouch(v: View, event: MotionEvent, position: Int, fastAdapter: IFastAdapter<Item>, item: Item): Boolean
 }
 
 /**
@@ -19,7 +20,7 @@ abstract class TouchEventHook<Item : GenericItem> : EventHook<Item> {
  *    true
  * }
  */
-inline fun <reified VH : RecyclerView.ViewHolder, reified Item : GenericItem> FastAdapter<Item>.addTouchListener(crossinline resolveView: (VH) -> View?, crossinline resolveViews: ((VH) -> List<View>?) = { null }, crossinline onTouch: (v: View, event: MotionEvent, position: Int, fastAdapter: FastAdapter<Item>, item: Item) -> Boolean) {
+inline fun <reified VH : RecyclerView.ViewHolder, reified Item : GenericItem> IFastAdapter<Item>.addTouchListener(crossinline resolveView: (VH) -> View?, crossinline resolveViews: ((VH) -> List<View>?) = { null }, crossinline onTouch: (v: View, event: MotionEvent, position: Int, fastAdapter: IFastAdapter<Item>, item: Item) -> Boolean) {
     addEventHook(object : TouchEventHook<Item>() {
         override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
             return if (viewHolder is VH) resolveView.invoke(viewHolder) else null
@@ -29,7 +30,7 @@ inline fun <reified VH : RecyclerView.ViewHolder, reified Item : GenericItem> Fa
             return if (viewHolder is VH) resolveViews.invoke(viewHolder) else super.onBindMany(viewHolder)
         }
 
-        override fun onTouch(v: View, event: MotionEvent, position: Int, fastAdapter: FastAdapter<Item>, item: Item): Boolean {
+        override fun onTouch(v: View, event: MotionEvent, position: Int, fastAdapter: IFastAdapter<Item>, item: Item): Boolean {
             return onTouch.invoke(v, event, position, fastAdapter, item)
         }
     })
