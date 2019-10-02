@@ -107,7 +107,7 @@ open class ModelAdapter<Model, Item : GenericItem>(
      * @return the generated List of Item
      */
     open fun intercept(models: List<Model>): List<Item> =
-        models.mapNotNull { intercept(it) }
+            models.mapNotNull { intercept(it) }
 
     /**
      * filters the items with the constraint using the provided Predicate
